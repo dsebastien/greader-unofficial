@@ -66,7 +66,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 
 
 	
-	@Override
 	public void clearCredentials() {
 		LOG.trace("Clearing credentials");
 		credentials = null;
@@ -574,13 +573,12 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	
 
 	
-	@Override
+
 	public boolean hasCredentials() {
 		return credentials != null;
 	}
 
-	
-	@Override
+
 	public boolean isAuthenticated() {
 		if (hasCredentials()) {
 			return credentials.hasAuthentication();
@@ -589,7 +587,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 
 	
-	@Override
+
 	public boolean login() throws AuthenticationException {
 		LOG.trace("Trying to login");
 		if (!hasCredentials()) {
@@ -640,7 +638,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 
 	
-	@Override
+
 	public void logout() {
 		if(isAuthenticated()) {
 			credentials.clearAuthentication();
@@ -817,7 +815,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 	
 	
-	@Override
 	public void setCredentials(GoogleCredentials credentials) {
 		clearCredentials();
 		LOG.trace("Setting credentials");
@@ -840,7 +837,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		this.setCredentials(new GoogleCredentials(username, password));
 	}
 
-	@Override
 	public GoogleCredentials getCredentials() {
 		return credentials;
 	}

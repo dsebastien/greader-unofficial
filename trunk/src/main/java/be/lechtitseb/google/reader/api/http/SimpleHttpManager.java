@@ -46,7 +46,6 @@ public class SimpleHttpManager implements HttpManager {
 		retryHandler = getRetryHandler();
 	}
 
-	@Override
 	public void addCookie(Cookie cookie) {
 		if (cookie != null) {
 			cookies.add(cookie);
@@ -55,7 +54,6 @@ public class SimpleHttpManager implements HttpManager {
 		}
 	}
 
-	@Override
 	public void clearCookies() {
 		cookies.clear();
 	}
@@ -95,18 +93,15 @@ public class SimpleHttpManager implements HttpManager {
 		}
 	}
 
-	@Override
 	public byte[] download(String url) throws GoogleReaderException {
 		return download(new GetMethod(url), null, false);
 	}
 
-	@Override
 	public byte[] download(String url, List<Parameter> parameters)
 			throws GoogleReaderException {
 		return download(new GetMethod(url), parameters, false);
 	}
 
-	@Override
 	public byte[] download(String url, List<Parameter> parameters,
 			boolean useCookies) throws GoogleReaderException {
 		return download(new GetMethod(url), parameters, useCookies);
@@ -147,18 +142,15 @@ public class SimpleHttpManager implements HttpManager {
 		}
 	}
 
-	@Override
 	public String get(String url) throws GoogleReaderException {
 		return get(url, null);
 	}
 
-	@Override
 	public String get(String url, List<Parameter> parameters)
 			throws GoogleReaderException {
 		return get(url, parameters, false);
 	}
 
-	@Override
 	public String get(String url, List<Parameter> parameters, boolean useCookies)
 			throws GoogleReaderException {
 		return execute(new GetMethod(url), parameters, useCookies);
@@ -227,18 +219,15 @@ public class SimpleHttpManager implements HttpManager {
 		};
 	}
 
-	@Override
 	public String post(String url) throws GoogleReaderException {
 		return post(url, null);
 	}
 
-	@Override
 	public String post(String url, List<Parameter> parameters)
 			throws GoogleReaderException {
 		return post(url, parameters, false);
 	}
 
-	@Override
 	public String post(String url, List<Parameter> parameters,
 			boolean useCookies) throws GoogleReaderException {
 		return execute(new PostMethod(url), parameters, useCookies);

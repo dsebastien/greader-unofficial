@@ -45,7 +45,6 @@ public final class GoogleReader implements
 		api = new GoogleReaderDataProvider(credentials);
 	}
 
-	@Override
 	public void clearCredentials() {
 		api.clearCredentials();
 	}
@@ -53,7 +52,6 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#getCredentials()
 	 */
-	@Override
 	public GoogleCredentials getCredentials() {
 		return api.getCredentials();
 	}
@@ -61,7 +59,6 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#hasCredentials()
 	 */
-	@Override
 	public boolean hasCredentials() {
 		return api.hasCredentials();
 	}
@@ -69,7 +66,6 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#isAuthenticated()
 	 */
-	@Override
 	public boolean isAuthenticated() {
 		return api.isAuthenticated();
 	}
@@ -77,7 +73,6 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#login()
 	 */
-	@Override
 	public boolean login() throws AuthenticationException {
 		return api.login();
 	}
@@ -85,7 +80,6 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#logout()
 	 */
-	@Override
 	public void logout() {
 		api.logout();
 	}
@@ -93,7 +87,6 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#setCredentials(java.lang.Object)
 	 */
-	@Override
 	public void setCredentials(GoogleCredentials credentials) {
 		api.setCredentials(credentials);
 	}

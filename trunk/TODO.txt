@@ -10,6 +10,8 @@ Maven:
 - Once a stable version is available, put on the official maven repository
 
 Related to the code:
+- Use java.util.logging instead of Log4j for the logging (to remove the dependency...)
+- Remove JDOM dependendy?
 - Add proxy support
 - Internationalize API messages/exceptions
 - Setup a test Google Reader account for the project?

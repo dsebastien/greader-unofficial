@@ -17,10 +17,11 @@ import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
 import be.lechtitseb.google.reader.api.model.format.OutputFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 //FIXME Most of the code isn't thread safe
 //FIXME Lots of code duplication, I guess some patterns could be useful, but I still have to learn :(
-
 /**
  * Interface with Google Reader Service, provides raw data (json, xml)
  */
@@ -166,8 +167,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 				true);
 	}
 
-
-
 	/**
 	 * Get the reading list for an authenticated user (items from different
 	 * feeds)
@@ -286,9 +285,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		return httpManager.get(url, parameters, true);
 	}
 	
-	
-	
-
 	/**
 	 * Get already read items (from any feed)
 	 * 
@@ -496,8 +492,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		return httpManager.get(Constants.URL_TOKEN, null, true);
 	}
 
-
-
 	/**
 	 * Get unread items from a given feed as XML (atom)
 	 * 
@@ -511,8 +505,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 			throws GoogleReaderException {
 		return getUnreadItems(feed, null);
 	}
-
-
 
 	/**
 	 * Get unread items from a given feed as XML String representation (Atom)
@@ -553,8 +545,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 				Constants.FILTER_CURRENT_USER_READ));
 		return httpManager.get(url, parameters, true);
 	}
-	
-	
 	
 	/**
 	 * Encode special characters to be later used in a request
@@ -797,7 +787,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		return search(searchTerm, null, numberOfElements, outputFormat);
 	}
 	
-	
 	/**
 	 * Search for items based on a search term
 	 * 
@@ -840,15 +829,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	public GoogleCredentials getCredentials() {
 		return credentials;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Get your current labels (tags)
@@ -925,7 +905,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		return httpManager.get(url, parameters, true);
 	}
 	
-
 	/**
 	 * Export your subscription list to OPML
 	 * @return The OPML String
@@ -936,9 +915,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		checkIfAuthenticated();
 		return httpManager.get(Constants.URL_OPML_EXPORT, null, true);
 	}
-	
-	
-	
 	
 	/**
 	 * Get an unread item (also marks it as READ!)
@@ -957,8 +933,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		
 		return httpManager.get(Constants.URL_NEXT_UNREAD, parameters, true);
 	}
-	
-	
 	
 	/**
 	 * Get the user preferences (JSON)
@@ -990,12 +964,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		return httpManager.get(Constants.URL_USER_INFO, parameters, true);
 	}
 	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Mark all the items from a feed as read
 	 * @param feedDescriptor The feed to mark as read
@@ -1007,7 +975,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		}
 		markFeedAsRead(feed.getId());
 	}
-	
 	
 	/**
 	 * Mark all the items from a feed as read
@@ -1033,7 +1000,35 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		}
 	}
 	
+        /**
+         * Mark all the items in all feeds in a label as read
+         * @param label The Label String to mark as read
+         * @throws GoogleReaderException If the user is not authenticated
+         */
+        public void markLabelAsRead ( String label ) throws GoogleReaderException {
+//                LOG.trace ( "Marking all items from a feed as read" );
 	
+                if ( label == null ) {
+                        throw new IllegalArgumentException ( "The lable name cannot be null!" );
+                }
+
+                checkIfAuthenticated ();
+                List<Parameter> parameters = new ArrayList<Parameter> ();
+
+                String userId = getUserId ();
+                if ( userId == null ) {
+                        throw new GoogleReaderException ( "Couldn't retrieve User Id " );
+                }
+
+                parameters.add ( new Parameter ( "s" , urlEncode ( "user/" + userId + "/label/" + label ) ) );
+                parameters.add ( new Parameter ( Constants.PARAMETER_TOKEN , getToken () ) );
+                String result = httpManager.post ( Constants.URL_MARK_ALL_AS_READ , parameters , true );
+
+                if ( !"OK".equals ( result ) ) {
+                        throw new GoogleReaderException ( "The operation failed (no more details, sorry)" );
+                }
+        }
+
 	/**
 	 * The feed you want to subscribe to
 	 * (no error if you are already subscribed to the given feed)
@@ -1063,7 +1058,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		}
 		removeSubscription(feedDescriptor.getId());
 	}
-	
 	
 	/**
 	 * The url or feed id (@see FeedDescriptor class) of a feed you want to subscribe to
@@ -1130,8 +1124,70 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		}
 	}
 	
+        /**
+         * Edit a subscription Label ( add/remove to label )
+         * @param feedUrl The url of the feed to subscribe to or to unsubscribe from
+         * @param title The title for the subscription to add (can be null if you remove a subscription)
+         * @param label The label for the subscription to be added to
+         * @param add If true, the subscription is to be added to label; if false, it will be removed
+         * @throws GoogleReaderException If the user is not authenticated
+         * @throws IllegalArgumentException If the feed is null or if you try to add a subscription but the title is null or empty
+         */
+        public void editSubscriptionLabel ( String feedUrl , String title , String label , boolean add ) throws GoogleReaderException {
+//                LOG.trace ( "Editing a subscription (adding or removing one" );
 	
+                if ( feedUrl == null ) {
+                        throw new IllegalArgumentException ( "The feed url cannot be null!" );
+                }
+                if ( add && ( label == null || "".equals ( label ) ) ) {
+                        throw new IllegalArgumentException ( "The title cannot be null!" );
+                }
 	
+                checkIfAuthenticated ();
 	
+                // If we received a normal url and not the feedId from a FeedDescriptor, no problem
+                if ( !feedUrl.startsWith ( "feed/" ) ) {
+                        feedUrl = "feed/" + feedUrl;
+                }
 	
+                List<Parameter> parameters = new ArrayList<Parameter> ();
+                String userId = getUserId ();
+                if ( userId == null ) {
+                        throw new GoogleReaderException ( "Couldn't retrieve User Id " );
+}
+
+                if ( add ) {
+                        parameters.add ( new Parameter ( Constants.EDIT_SUBSCRIPTION_FEED_ADD , urlEncode ( "user/" + userId + "/label/" + label ) ) );
+                } else {
+                        parameters.add ( new Parameter ( Constants.EDIT_SUBSCRIPTION_FEED_REMOVE , urlEncode ( "user/" + userId + "/label/" + label ) ) );
+                }
+                parameters.add ( new Parameter ( Constants.EDIT_SUBSCRIPTION_FEED , urlEncode ( feedUrl ) ) );
+                parameters.add ( new Parameter ( Constants.EDIT_SUBSCRIPTION_ACTION , Constants.EDIT_SUBSCRIPTION_EDIT_ACTION ) );
+                if ( add ) {
+                        parameters.add ( new Parameter ( "t" , urlEncode ( title ) ) );
+                }
+                parameters.add ( new Parameter ( Constants.PARAMETER_TOKEN , getToken () ) );
+                String result = httpManager.post ( Constants.URL_EDIT_SUSCRIPTION , parameters , true );
+
+                if ( !"OK".equals ( result ) ) {
+                        throw new GoogleReaderException ( "The operation failed (no more details, sorry)" );
+                }
+        }
+
+        /**
+         * Gets User Id From Google Reader
+         * @return String The Google user ID
+         */
+        public String getUserId () {
+                try {
+                        JSONObject jSONObject = new JSONObject ( getUserInformation () );
+                        String userId = jSONObject.getString ( "userId" );
+                        return userId;
+                } catch ( GoogleReaderException ex ) {
+                        LOG.error ( "Google Reader Exception  while Getting User ID :  "+ex );
+                } catch ( JSONException ex ) {
+                        LOG.error ( "JSON Exception while Getting User ID : "+ex );
+                }
+                return null;
+        }
 }

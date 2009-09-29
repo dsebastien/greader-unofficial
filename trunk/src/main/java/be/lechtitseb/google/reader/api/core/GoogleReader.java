@@ -20,7 +20,6 @@ import be.lechtitseb.google.reader.api.util.GoogleReaderUtil;
 
 //FIXME the methods javadoc are all copy/pasted from those in GoogleReaderDataProvider, I don't know how to fix this (and if it needs to or not)
 //the problem is that I don't think I can use an interface (return types are different)
-
 /**
  * Unofficial Google Reader API, can be used to manipulate a Google Reader
  * account. Once the user is authenticated, it is possible to retrieve his
@@ -154,8 +153,6 @@ public final class GoogleReader implements
 		return GoogleReaderUtil.getLabelsFromJSON(labelsContent);
 	}
 	
-	
-	
 	/**
 	 * Export your subscription list to OPML
 	 * @return The OPML String
@@ -164,7 +161,6 @@ public final class GoogleReader implements
 	public String exportSubscriptionsToOPML() throws GoogleReaderException{
 		return api.exportSubscriptionsToOPML();
 	}
-	
 	
 	/**
 	 * Get the user preferences
@@ -186,7 +182,6 @@ public final class GoogleReader implements
 		return GoogleReaderUtil.getUserInformationFromJson(raw);
 	}
 	
-	
 	/**
 	 * Get an unread item (also marks it as READ!)
 	 * @return The next unread item (HTML page!)
@@ -206,7 +201,6 @@ public final class GoogleReader implements
 		return api.getNextUnreadItem(shuffleToken);
 	}
 	
-
 	/**
 	 * Mark all the items from a feed as read
 	 * @param feedId The feed to mark as read
@@ -225,6 +219,8 @@ public final class GoogleReader implements
 		api.markFeedAsRead(feed);
 	}
 	
-	
+        public GoogleReaderDataProvider getApi () {
+                return api;
+        }
 	//public void addSubscription()
 }

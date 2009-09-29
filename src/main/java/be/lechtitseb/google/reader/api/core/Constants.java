@@ -87,9 +87,13 @@ public final class Constants {
 	public static final String EDIT_SUBSCRIPTION_UNSUBSCRIBE = "unsubscribe";
 	public static final String EDIT_SUBSCRIPTION_ACTION = "ac";
 	public static final String EDIT_SUBSCRIPTION_FEED = "s";
+        // Add Subscription to a label
+	public static final String EDIT_SUBSCRIPTION_FEED_ADD = "a";
+        // Remove Subscription from a label
+	public static final String EDIT_SUBSCRIPTION_FEED_REMOVE = "r";
+	public static final String EDIT_SUBSCRIPTION_EDIT_ACTION = "edit";
 	
 	public static final String URL_MARK_ALL_AS_READ = URL_API + "/mark-all-as-read";
-	
 	
 	public static final String URL_USER_INFO = URL_READER + "/user-info";
 

@@ -47,6 +47,7 @@ public final class Constants {
 	public static final String URL_PREFERENCE_LIST =
 			URL_API + "/preference/list";
 	public static final String URL_FEED = URL_READER + "/atom/";
+	public static final String URL_FEED_JSON = URL_READER + "/api/0/stream/contents/";
 	public static final String URL_UNREAD_COUNT = URL_API + "/unread-count";
 	public static final String URL_LABEL = URL_FEED + "user/-/label/";
 	public static final String ITEM_STATE = "/state/com.google";

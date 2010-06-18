@@ -503,7 +503,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 */
 	public String getUnreadItems(FeedDescriptor feed)
 			throws GoogleReaderException {
-		return getUnreadItems(feed, null, null);
+		return getUnreadItems(feed, null);
 	}
 
 	/**
@@ -517,7 +517,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 * @throws GoogleReaderException
 	 *         If the user is not authenticated
 	 */
-	public String getUnreadItems(FeedDescriptor feed, Integer numberOfElements, OutputFormat outputFormat)
+	public String getUnreadItems(FeedDescriptor feed, Integer numberOfElements)
 			throws GoogleReaderException {
 		LOG.trace("Getting unread items from a feed");
 		if (feed == null) {
@@ -533,22 +533,12 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		checkIfAuthenticated();
 		
 		// The feed id needs to be encoded
-		String url = null;
-		if (OutputFormat.JSON.equals(outputFormat)) {
-			//add support JSON for Items
-			url = Constants.URL_FEED_JSON + urlEncode(feed.getId());
-		} else {
-			url = Constants.URL_FEED + urlEncode(feed.getId());
-		}
+		String url = Constants.URL_FEED + urlEncode(feed.getId());
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		
 		if (numberOfElements != null) {
 			parameters.add(new Parameter(Constants.PARAMETER_NUMBER_OF_RESULTS,
 					numberOfElements));
-		}
-		if (outputFormat != null) {
-			parameters.add(new Parameter(Constants.PARAMETER_OUTPUT_FORMAT,
-					outputFormat.getFormat()));
 		}
 		// exclude read items from the results
 		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER,

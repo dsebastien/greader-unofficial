@@ -13,9 +13,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndFeed;
+
 import be.lechtitseb.google.reader.api.core.Constants;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
+import be.lechtitseb.google.reader.api.model.feed.ItemDescriptor;
 import be.lechtitseb.google.reader.api.model.feed.Label;
 import be.lechtitseb.google.reader.api.model.item.Item;
 import be.lechtitseb.google.reader.api.model.preference.UserPreferences;
@@ -534,4 +538,33 @@ public final class GoogleReaderUtil {
 					"Problem while parsing the feed descriptors list", e);
 		}
 	}
+	
+	/**
+	 * get Items Description from RSS list 
+	 * @param xmlContent
+	 * @return
+	 * @throws GoogleReaderException
+	 */
+	public static List<ItemDescriptor> getItemDescriptorsFromItemsXml(String xmlContent) throws GoogleReaderException {
+		List<ItemDescriptor> items = new ArrayList<ItemDescriptor>();
+		SyndFeed syndFeed = AtomUtil.getAtomFeed(xmlContent);
+		if (syndFeed != null) {
+			for (Object object : syndFeed.getEntries()) {
+				SyndEntry entry = (SyndEntry)object;
+				if (entry != null) {
+					ItemDescriptor item = new ItemDescriptor();
+					item.setUri(entry.getUri());
+					item.setLink(entry.getLink());
+					item.setTitle(entry.getTitle());
+					if (entry.getDescription() != null) {
+						item.setDescription(entry.getDescription().getValue());
+						item.setDescriptionType(entry.getDescription().getType());
+					}
+					items.add(item);
+				}
+			}
+		}
+		return items;
+	}
+	
 }

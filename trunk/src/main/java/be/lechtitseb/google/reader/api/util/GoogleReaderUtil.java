@@ -361,7 +361,9 @@ public final class GoogleReaderUtil {
 				for (int i = 0; i < labels.length(); i++) {
 					tmp = new Label();
 					id = labels.getJSONObject(i).getString("id");
-					shared = labels.getJSONObject(i).getString("shared");
+					if (!labels.getJSONObject(i).isNull("shared")) {
+						shared = labels.getJSONObject(i).getString("shared");
+					}
 					tmp.setId(id);
 					if (id.indexOf(Constants.ITEM_STATE) >= 0) {
 						// FIXME maybe these should be treated differently

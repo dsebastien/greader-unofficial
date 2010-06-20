@@ -11,6 +11,7 @@ import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
+import be.lechtitseb.google.reader.api.model.feed.ItemDescriptor;
 import be.lechtitseb.google.reader.api.model.feed.Label;
 import be.lechtitseb.google.reader.api.model.format.OutputFormat;
 import be.lechtitseb.google.reader.api.model.item.Item;
@@ -217,6 +218,15 @@ public final class GoogleReader implements
 	 */
 	public void markFeedAsRead(FeedDescriptor feed) throws GoogleReaderException{
 		api.markFeedAsRead(feed);
+	}
+	
+	/**
+	 * Mark the item from a feed as read
+	 * @param feed The feed to mark as read
+	 * @throws GoogleReaderException If the user is not authenticated
+	 */
+	public void markItemAsRead(ItemDescriptor item,FeedDescriptor feed) throws GoogleReaderException{
+		api.markItemAsRead(item,feed);
 	}
 	
         public GoogleReaderDataProvider getApi () {

@@ -16,6 +16,7 @@ import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
+import be.lechtitseb.google.reader.api.model.feed.ItemDescriptor;
 import be.lechtitseb.google.reader.api.model.format.OutputFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -994,6 +995,61 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		parameters.add(new Parameter("s", urlEncode(feedId)));
 		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
 		String result = httpManager.post(Constants.URL_MARK_ALL_AS_READ, parameters,true);
+		
+		if(!"OK".equals(result)) {
+			throw new GoogleReaderException("The operation failed (no more details, sorry)");
+		}
+	}
+	
+	
+	/**
+	 * Mark the item from a feed as read
+	 * @param itemId The Item to mark as read
+	 * @param feedId The feed 
+	 * @throws GoogleReaderException If the user is not authenticated
+	 */
+	public void markItemAsRead(ItemDescriptor item, FeedDescriptor feed) throws GoogleReaderException {
+		if(item == null) {
+			throw new IllegalArgumentException("The item cannot be null!");
+		}
+		if(feed == null) {
+			throw new IllegalArgumentException("The feed cannot be null!");
+		}
+		markItemAsRead(item.getUri(), feed.getId());
+	}
+	/**
+	 * Mark the item from a feed as read
+	 * @param itemId The Item to mark as read
+	 * @param feedId The feed 
+	 * @throws GoogleReaderException If the user is not authenticated
+	 */
+	public void markItemAsRead(String itemId, String feedId) throws GoogleReaderException {
+		LOG.trace("Marking item from a feed as read");
+		
+		if(itemId == null) {
+			throw new IllegalArgumentException("The item id cannot be null!");
+		}
+		
+		if(feedId == null) {
+			throw new IllegalArgumentException("The feed id cannot be null!");
+		}
+		
+		checkIfAuthenticated();
+		List<Parameter> parameters = new ArrayList<Parameter>();
+				
+        String userId = getUserId ();
+        if ( userId == null ) {
+                throw new GoogleReaderException ( "Couldn't retrieve User Id " );
+        }
+
+		parameters.add(new Parameter("s", urlEncode(feedId)));
+		parameters.add(new Parameter("i", urlEncode(itemId)));
+		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
+		parameters.add(new Parameter("async", "true"));
+		parameters.add(new Parameter("pos", "0"));
+//		parameters.add(new Parameter("a", "user/05721618992712852750/state/com.google/read"));
+		parameters.add(new Parameter("a", "user/"+userId+Constants.ITEM_STATE_READ));
+		String result = httpManager.post(Constants.URL_MARK_ITEM_AS_READ, parameters,true);
 		
 		if(!"OK".equals(result)) {
 			throw new GoogleReaderException("The operation failed (no more details, sorry)");

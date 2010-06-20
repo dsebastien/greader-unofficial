@@ -95,6 +95,7 @@ public final class Constants {
 	public static final String EDIT_SUBSCRIPTION_EDIT_ACTION = "edit";
 	
 	public static final String URL_MARK_ALL_AS_READ = URL_API + "/mark-all-as-read";
+	public static final String URL_MARK_ITEM_AS_READ = URL_API + "/edit-tag";
 	
 	public static final String URL_USER_INFO = URL_READER + "/user-info";
 

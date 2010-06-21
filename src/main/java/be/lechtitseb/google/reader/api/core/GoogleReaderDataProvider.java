@@ -1,6 +1,8 @@
 package be.lechtitseb.google.reader.api.core;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.httpclient.Cookie;
@@ -542,8 +544,14 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 					numberOfElements));
 		}
 		// exclude read items from the results
-		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER,
-				Constants.FILTER_CURRENT_USER_READ));
+//		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER,Constants.FILTER_CURRENT_USER_READ));
+        String userId = getUserId ();
+		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER, "user/"+userId+Constants.ITEM_STATE_READ));
+		parameters.add(new Parameter("ck", ""+new Date().getTime()));
+		parameters.add(new Parameter("client", "greader-unofficial"));
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.add(GregorianCalendar.MONTH, -1);
+		parameters.add(new Parameter("ot", ""+(calendar.getTimeInMillis()/1000)));
 		return httpManager.get(url, parameters, true);
 	}
 	

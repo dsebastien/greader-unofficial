@@ -1,4 +1,7 @@
 #labels Phase-Design
+=General=
+- Discuss the project's license. I chose LGPL at the beginning, but maybe we could choose a less restrictive license (e.g., MIT)?
+
 =Maven=
 - Add the license & header to the files (http://code.google.com/p/maven-license-plugin/)
 - Fill-in the SCM info in the pom.xml
@@ -17,7 +20,6 @@
 - Add samples
 
 =Features to implement=
-
 - A method to mark an item as read
 - A method to mark a feed as read
 

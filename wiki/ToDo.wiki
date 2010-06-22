@@ -7,6 +7,9 @@
 - Fill-in the SCM info in the pom.xml
 - Fill-in the issue management info in the pom.xml
 - Once a stable version is available, put on the official maven repository
+- Add versions for all plugins (report & build)
+- Update dependencies to more recent versions
+- Create the maven site (src/site/...)
 
 =Code related=
 - Clean up / Refactor / Design

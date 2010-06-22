@@ -31,7 +31,8 @@ public final class Constants {
 	public static final String PARAMETER_SEARCH_SOURCE_FEED = "s";
 	public static final String PARAMETER_SEARCH_TERM = "q";
 	public static final String PARAMETER_STATE_FILTER = "xt";
-	public static final String URL_PROTOCOL = "https://";
+	//public static final String URL_PROTOCOL = "https://";
+	public static final String URL_PROTOCOL = "http://";
 	public static final String URL_GOOGLE = URL_PROTOCOL + "www.google.com";
 	public static final String URL_LOGIN = URL_GOOGLE + "/accounts/ClientLogin";
 	public static final String URL_READER = URL_GOOGLE + "/reader";
@@ -47,7 +48,6 @@ public final class Constants {
 	public static final String URL_PREFERENCE_LIST =
 			URL_API + "/preference/list";
 	public static final String URL_FEED = URL_READER + "/atom/";
-	public static final String URL_FEED_JSON = URL_READER + "/api/0/stream/contents/";
 	public static final String URL_UNREAD_COUNT = URL_API + "/unread-count";
 	public static final String URL_LABEL = URL_FEED + "user/-/label/";
 	public static final String ITEM_STATE = "/state/com.google";
@@ -95,7 +95,6 @@ public final class Constants {
 	public static final String EDIT_SUBSCRIPTION_EDIT_ACTION = "edit";
 	
 	public static final String URL_MARK_ALL_AS_READ = URL_API + "/mark-all-as-read";
-	public static final String URL_MARK_ITEM_AS_READ = URL_API + "/edit-tag";
 	
 	public static final String URL_USER_INFO = URL_READER + "/user-info";
 

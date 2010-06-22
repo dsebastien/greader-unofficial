@@ -8,10 +8,11 @@ import org.apache.log4j.Logger;
 
 import be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager;
 import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
+import be.lechtitseb.google.reader.api.model.authentication.ICredentials;
+import be.lechtitseb.google.reader.api.model.authentication.OAuthCredentials;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
-import be.lechtitseb.google.reader.api.model.feed.ItemDescriptor;
 import be.lechtitseb.google.reader.api.model.feed.Label;
 import be.lechtitseb.google.reader.api.model.format.OutputFormat;
 import be.lechtitseb.google.reader.api.model.item.Item;
@@ -37,13 +38,11 @@ public final class GoogleReader implements
 		api = new GoogleReaderDataProvider();
 	}
 
-	public GoogleReader(String username, String password) {
-		api = new GoogleReaderDataProvider(username, password);
-	}
-
-	public GoogleReader(GoogleCredentials credentials) {
+	public GoogleReader(ICredentials credentials) {
 		api = new GoogleReaderDataProvider(credentials);
 	}
+
+
 
 	public void clearCredentials() {
 		api.clearCredentials();
@@ -52,7 +51,7 @@ public final class GoogleReader implements
 	/* (non-Javadoc)
 	 * @see be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager#getCredentials()
 	 */
-	public GoogleCredentials getCredentials() {
+	public ICredentials getCredentials() {
 		return api.getCredentials();
 	}
 
@@ -89,6 +88,35 @@ public final class GoogleReader implements
 	 */
 	public void setCredentials(GoogleCredentials credentials) {
 		api.setCredentials(credentials);
+	}
+	
+	/*
+	 * 
+	 */
+	public Item getItem(String itemId){
+
+		try {
+			String itemJSON = api.getItem(itemId);
+			Item item = GoogleReaderUtil.getItemFromJson(itemJSON);
+			return item;
+			
+		} catch (GoogleReaderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		/*List<String> resultsIds =
+				GoogleReaderUtil.getItemIdsFromJson(searchResults);
+		for (String result : resultsIds) {
+			String itemContent = api.getItem(result);
+			returnValue.add(GoogleReaderUtil.getItemFromJson(itemContent));
+		}
+		return returnValue;
+		*/
+		
+		return null;
+		
+		
 	}
 	
 	/**
@@ -218,15 +246,6 @@ public final class GoogleReader implements
 	 */
 	public void markFeedAsRead(FeedDescriptor feed) throws GoogleReaderException{
 		api.markFeedAsRead(feed);
-	}
-	
-	/**
-	 * Mark the item from a feed as read
-	 * @param feed The feed to mark as read
-	 * @throws GoogleReaderException If the user is not authenticated
-	 */
-	public void markItemAsRead(ItemDescriptor item,FeedDescriptor feed) throws GoogleReaderException{
-		api.markItemAsRead(item,feed);
 	}
 	
         public GoogleReaderDataProvider getApi () {

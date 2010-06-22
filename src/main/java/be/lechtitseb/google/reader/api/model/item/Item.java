@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
 
 /**
@@ -18,6 +20,10 @@ public class Item {
 	private String url;
 	private String id;
 	private String numericId;
+	private String originalId;	//the feed originators guid
+	
+
+
 	private String author;
 	private String title;
 	private Date updatedOn;
@@ -185,7 +191,18 @@ public class Item {
 	}
 
 
-	
+	public String getOriginalId() {
+		
+		throw new NotImplementedException();
+		//return originalId;
+	}
+
+
+	public void setOriginalId(String originalId) {
+		this.originalId = originalId;
+		throw new NotImplementedException();
+	}
+
 	
 	
 	

@@ -1,53 +1,60 @@
 package be.lechtitseb.google.reader.api.core;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.httpclient.Cookie;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import be.lechtitseb.google.reader.api.http.HttpManager;
 import be.lechtitseb.google.reader.api.http.Parameter;
 import be.lechtitseb.google.reader.api.http.SimpleHttpManager;
 import be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager;
 import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
+import be.lechtitseb.google.reader.api.model.authentication.ICredentials;
+import be.lechtitseb.google.reader.api.model.authentication.oAuthManager;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
-import be.lechtitseb.google.reader.api.model.feed.ItemDescriptor;
 import be.lechtitseb.google.reader.api.model.format.OutputFormat;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //FIXME Most of the code isn't thread safe
 //FIXME Lots of code duplication, I guess some patterns could be useful, but I still have to learn :(
 /**
  * Interface with Google Reader Service, provides raw data (json, xml)
  */
-public final class GoogleReaderDataProvider implements AuthenticationManager<GoogleCredentials> {
+public final class GoogleReaderDataProvider {
 	private static final Logger LOG =
 			Logger.getLogger(GoogleReaderDataProvider.class.getName());
 	private HttpManager httpManager;
-	private GoogleCredentials credentials = null;
 	
-
+	//@TODO don't handle credentials here
+	private ICredentials credentials = null;
+	private oAuthManager authManager; 
+	
+	
+//@TODO you have to provide some credentials
 	protected GoogleReaderDataProvider() {
 		LOG.trace("Initializing Google Reader API");
-		httpManager = new SimpleHttpManager();
+		httpManager = new SimpleHttpManager(credentials);
 	}
 
-	protected GoogleReaderDataProvider(GoogleCredentials credentials) {
+/*	protected GoogleReaderDataProvider(GoogleCredentials credentials) {
 		this();
 		setCredentials(credentials);
-	}
+	}*/
 	
-	protected GoogleReaderDataProvider(String username, String password) {
+/*	protected GoogleReaderDataProvider(String username, String password) {
 		this();
 		setCredentials(username, password);
+	}*/
+
+	public GoogleReaderDataProvider(ICredentials credentials) {
+		this();
+		setCredentials(credentials);
 	}
 
 	/**
@@ -544,14 +551,8 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 					numberOfElements));
 		}
 		// exclude read items from the results
-//		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER,Constants.FILTER_CURRENT_USER_READ));
-        String userId = getUserId ();
-		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER, "user/"+userId+Constants.ITEM_STATE_READ));
-		parameters.add(new Parameter("ck", ""+new Date().getTime()));
-		parameters.add(new Parameter("client", "greader-unofficial"));
-		GregorianCalendar calendar = new GregorianCalendar();
-		calendar.add(GregorianCalendar.MONTH, -1);
-		parameters.add(new Parameter("ot", ""+(calendar.getTimeInMillis()/1000)));
+		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER,
+				Constants.FILTER_CURRENT_USER_READ));
 		return httpManager.get(url, parameters, true);
 	}
 	
@@ -561,13 +562,14 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 * @return The encoded string
 	 * @throws GoogleReaderException If a problem occured while encoding the string
 	 */
+	@SuppressWarnings("deprecation")
 	private String urlEncode(String s) throws GoogleReaderException {
-		try {
-			return URIUtil.encodeQuery(s);
-		} catch (URIException e) {
-			throw new GoogleReaderException(
-					"Problem while encoding the feed id", e);
-		}
+//		try {
+			return URLEncoder.encode(s);
+//		} catch (URIException e) {
+///			throw new GoogleReaderException(
+//					"Problem while encoding the feed id", e);
+//		}
 	}
 	
 
@@ -579,14 +581,15 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 
 
 	public boolean isAuthenticated() {
-		if (hasCredentials()) {
+		return true;
+/*		if (hasCredentials()) {
 			return credentials.hasAuthentication();
 		}
-		return false;
+		return false;*/
 	}
 
 	
-
+//@TODO delegate to auth manager
 	public boolean login() throws AuthenticationException {
 		LOG.trace("Trying to login");
 		if (!hasCredentials()) {
@@ -601,39 +604,21 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		String result;
 		
 		List<Parameter> parameters = new ArrayList<Parameter>();
-		parameters.add(new Parameter(Constants.PARAMETER_LOGIN_USERNAME, credentials.getUsername()));
-		parameters.add(new Parameter(Constants.PARAMETER_LOGIN_PASSWORD, credentials.getPassword()));
+//@TODO must push adding username/password into wrapper object
+//		parameters.add(new Parameter(Constants.PARAMETER_LOGIN_USERNAME, credentials.getUsername()));
+//		parameters.add(new Parameter(Constants.PARAMETER_LOGIN_PASSWORD, credentials.getPassword()));
 		// parameters.add(new Parameter("service","reader")); // NOT mandatory	
 		
-		
-		try {
-			result =
-					httpManager.post(Constants.URL_LOGIN,
-							parameters, true);
-			// LOG.debug("Login result: "+result);
-			// Example:
-			// SID=BLABLABLABLABLAVERYLONGID
-			// LSID=BLABLABLABLAVERYLONGABITDIFFERENTID
-			// Parse the result
-			String sid =
-					result.substring(result.indexOf(Constants.SID_TAG)
-							+ Constants.SID_TAG.length(), result.indexOf('\n'));
-			// LOG.debug("SID: "+sid);
-			String lSid =
-					result.substring(result.indexOf(Constants.LSID_TAG)
-							+ Constants.LSID_TAG.length(), result.length());
-			// LOG.debug("LSID: "+lSid);
-			httpManager.clearCookies(); // just to be sure...
-			httpManager.addCookie(new Cookie(Constants.COOKIE_DOMAIN, Constants.SID, sid,
-							Constants.COOKIE_PATH, Constants.COOKIE_MAX_AGE,
-							Constants.COOKIE_SECURE));
-			credentials.setSid(sid);
-			credentials.setLSid(lSid);
+		return true;
+/*		try {
+			
+			//authManager.login();
 			return true;
+			
 		} catch (GoogleReaderException e) {
 			throw new AuthenticationException(
 					"Authentication failed using the provided credentials (they may be wrong or there was connectivity problem)",e);
-		}
+		}*/
 	}
 
 	
@@ -813,7 +798,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 	
 	
-	public void setCredentials(GoogleCredentials credentials) {
+	public void setCredentials(ICredentials credentials) {
 		clearCredentials();
 		LOG.trace("Setting credentials");
 		this.credentials = credentials;
@@ -832,10 +817,10 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 *        credentials
 	 */
 	public void setCredentials(String username, String password) {
-		this.setCredentials(new GoogleCredentials(username, password));
+		this.setCredentials((ICredentials) new GoogleCredentials(username, password));
 	}
 
-	public GoogleCredentials getCredentials() {
+	public ICredentials getCredentials() {
 		return credentials;
 	}
 	
@@ -871,7 +856,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	
 	/**
 	 * Get the reading list for an authenticated user and a specific label
-	 * @parem label The label to get the reading list for
+	 * @param label The label to get the reading list for
 	 * @return The reading list (Atom as an XML String)
 	 * @throws GoogleReaderException If the user is not authenticated
 	 */
@@ -1003,61 +988,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		parameters.add(new Parameter("s", urlEncode(feedId)));
 		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
 		String result = httpManager.post(Constants.URL_MARK_ALL_AS_READ, parameters,true);
-		
-		if(!"OK".equals(result)) {
-			throw new GoogleReaderException("The operation failed (no more details, sorry)");
-		}
-	}
-	
-	
-	/**
-	 * Mark the item from a feed as read
-	 * @param itemId The Item to mark as read
-	 * @param feedId The feed 
-	 * @throws GoogleReaderException If the user is not authenticated
-	 */
-	public void markItemAsRead(ItemDescriptor item, FeedDescriptor feed) throws GoogleReaderException {
-		if(item == null) {
-			throw new IllegalArgumentException("The item cannot be null!");
-		}
-		if(feed == null) {
-			throw new IllegalArgumentException("The feed cannot be null!");
-		}
-		markItemAsRead(item.getUri(), feed.getId());
-	}
-	/**
-	 * Mark the item from a feed as read
-	 * @param itemId The Item to mark as read
-	 * @param feedId The feed 
-	 * @throws GoogleReaderException If the user is not authenticated
-	 */
-	public void markItemAsRead(String itemId, String feedId) throws GoogleReaderException {
-		LOG.trace("Marking item from a feed as read");
-		
-		if(itemId == null) {
-			throw new IllegalArgumentException("The item id cannot be null!");
-		}
-		
-		if(feedId == null) {
-			throw new IllegalArgumentException("The feed id cannot be null!");
-		}
-		
-		checkIfAuthenticated();
-		List<Parameter> parameters = new ArrayList<Parameter>();
-				
-        String userId = getUserId ();
-        if ( userId == null ) {
-                throw new GoogleReaderException ( "Couldn't retrieve User Id " );
-        }
-
-		parameters.add(new Parameter("s", urlEncode(feedId)));
-		parameters.add(new Parameter("i", urlEncode(itemId)));
-		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
-		parameters.add(new Parameter("async", "true"));
-		parameters.add(new Parameter("pos", "0"));
-//		parameters.add(new Parameter("a", "user/05721618992712852750/state/com.google/read"));
-		parameters.add(new Parameter("a", "user/"+userId+Constants.ITEM_STATE_READ));
-		String result = httpManager.post(Constants.URL_MARK_ITEM_AS_READ, parameters,true);
 		
 		if(!"OK".equals(result)) {
 			throw new GoogleReaderException("The operation failed (no more details, sorry)");

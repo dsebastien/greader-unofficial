@@ -4,7 +4,7 @@ package be.lechtitseb.google.reader.api.model.authentication;
 /**
  * Google specific credentials
  */
-public class GoogleCredentials extends BasicCredentials {
+public class GoogleCredentials extends BasicCredentials implements ICredentials {
 	private String sid = "";
 	private String lSid = ""; // Unused for now it seems
 

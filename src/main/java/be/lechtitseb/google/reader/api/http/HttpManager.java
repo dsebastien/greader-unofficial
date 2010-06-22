@@ -2,7 +2,7 @@ package be.lechtitseb.google.reader.api.http;
 
 import java.util.List;
 
-import org.apache.commons.httpclient.Cookie;
+import org.apache.http.cookie.Cookie;
 
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 

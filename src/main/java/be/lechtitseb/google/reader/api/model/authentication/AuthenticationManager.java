@@ -11,7 +11,7 @@ public interface AuthenticationManager<T> {
 	 * 
 	 * @return The current credentials or null if not set
 	 */
-	public T getCredentials();
+	public ICredentials getCredentials();
 
 	/**
 	 * Removes any previously set credentials / cookie and sets the new

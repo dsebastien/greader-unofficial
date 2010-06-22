@@ -1,0 +1,5 @@
+#labels Phase-Implementation
+#Information targeted to developers of this project
+
+= Developers mailing list =
+http://groups.google.com/group/greader-unofficial-devs

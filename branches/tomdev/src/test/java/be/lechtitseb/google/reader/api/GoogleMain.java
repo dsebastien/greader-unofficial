@@ -1,3 +1,8 @@
+/**
+ * based on an example by
+ *  * Copyright (C) 2010 Jayesh Salvi (http://www.altcanvas.com)
+ */
+
 package be.lechtitseb.google.reader.api;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

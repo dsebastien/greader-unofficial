@@ -34,11 +34,11 @@ public final class GoogleReader implements
 			Logger.getLogger(GoogleReader.class.getName());
 	private GoogleReaderDataProvider api;
 
-	public GoogleReader() {
+/*	public GoogleReader() {
 		api = new GoogleReaderDataProvider();
-	}
+	}*/
 
-	public GoogleReader(ICredentials credentials) {
+	public GoogleReader(OAuthCredentials credentials) {
 		api = new GoogleReaderDataProvider(credentials);
 	}
 

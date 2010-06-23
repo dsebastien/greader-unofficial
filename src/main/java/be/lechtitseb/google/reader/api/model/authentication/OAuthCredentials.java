@@ -54,7 +54,6 @@ public class OAuthCredentials implements ICredentials,CredentialsProvider {
 	
 	public OAuthCredentials(String cONSUMERKEY, String cONSUMERSECRET,
 			String aUTHKEY, String aUTHSECRET) {
-		super();
 		CONSUMER_KEY = cONSUMERKEY;
 		CONSUMER_SECRET = cONSUMERSECRET;
 		AUTH_KEY = aUTHKEY;

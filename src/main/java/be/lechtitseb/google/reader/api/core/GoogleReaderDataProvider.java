@@ -15,6 +15,7 @@ import be.lechtitseb.google.reader.api.http.SimpleHttpManager;
 import be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager;
 import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
 import be.lechtitseb.google.reader.api.model.authentication.ICredentials;
+import be.lechtitseb.google.reader.api.model.authentication.OAuthCredentials;
 import be.lechtitseb.google.reader.api.model.authentication.oAuthManager;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
@@ -32,15 +33,15 @@ public final class GoogleReaderDataProvider {
 	private HttpManager httpManager;
 	
 	//@TODO don't handle credentials here
-	private ICredentials credentials = null;
+	private OAuthCredentials credentials = null;
 	private oAuthManager authManager; 
 	
 	
 //@TODO you have to provide some credentials
-	protected GoogleReaderDataProvider() {
+/*	protected GoogleReaderDataProvider() {
 		LOG.trace("Initializing Google Reader API");
 		httpManager = new SimpleHttpManager(credentials);
-	}
+	}*/
 
 /*	protected GoogleReaderDataProvider(GoogleCredentials credentials) {
 		this();
@@ -52,8 +53,9 @@ public final class GoogleReaderDataProvider {
 		setCredentials(username, password);
 	}*/
 
-	public GoogleReaderDataProvider(ICredentials credentials) {
-		this();
+	public GoogleReaderDataProvider(OAuthCredentials credentials) {
+		//this();
+		httpManager = new SimpleHttpManager(credentials);
 		setCredentials(credentials);
 	}
 
@@ -801,7 +803,7 @@ public final class GoogleReaderDataProvider {
 	public void setCredentials(ICredentials credentials) {
 		clearCredentials();
 		LOG.trace("Setting credentials");
-		this.credentials = credentials;
+		this.credentials = (OAuthCredentials) credentials;
 	}
 	
 	/**

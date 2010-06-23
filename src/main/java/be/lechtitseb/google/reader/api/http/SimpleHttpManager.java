@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 
 import be.lechtitseb.google.reader.api.core.Constants;
 import be.lechtitseb.google.reader.api.model.authentication.ICredentials;
+import be.lechtitseb.google.reader.api.model.authentication.OAuthCredentials;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 
 /**
@@ -76,14 +77,19 @@ public class SimpleHttpManager implements HttpManager {
 	 * if we provide credentials then sign the request with the credentials
 	 * @param credentials
 	 */
-	public SimpleHttpManager(ICredentials credentials) {
+	public SimpleHttpManager(OAuthCredentials credentials) {
 		this();
-		consumer = new CommonsHttpOAuthConsumer("anonymous", "anonymous");
-		String accessToken = "1/WOBNz0VEmBIGRO0rpzSMkj3deIvE1tIl8AMvLeS0IX4";
-		String tokenSecret = "30SUfXy7ZEySwiY5mot/ESb+";
-
+/*		consumer = new CommonsHttpOAuthConsumer(credentials.getCONSUMER_KEY(), 
+				credentials.getCONSUMER_SECRET());
+*/
+		consumer = new CommonsHttpOAuthConsumer("anonymous","anonymous");
 		// 4/3qW_V9-Z3-3RVEmzxrHf67bpsaHj
-		consumer.setTokenWithSecret(accessToken, tokenSecret);
+		
+		System.out.println(credentials.getAUTH_KEY());
+		System.out.println(credentials.getAUTH_SECRET());
+		consumer.setTokenWithSecret(credentials.getAUTH_KEY(), credentials.getAUTH_SECRET());
+		
+
 		
 	}
 

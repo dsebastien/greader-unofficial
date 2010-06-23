@@ -1,7 +1,11 @@
 package be.lechtitseb.google.reader.api;
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import be.lechtitseb.google.reader.api.core.GoogleReader;
 import be.lechtitseb.google.reader.api.model.authentication.OAuthCredentials;
@@ -12,36 +16,22 @@ import be.lechtitseb.google.reader.api.model.item.Item;
 public class GoogleReaderTest {
 
 
-		// set some vars to use for prototyping
-		private final String EDIT_URL = "https://www.google.com/accounts/ClientLogin";
-
 		private final String SERVICE = "reader";
 		private final String SOURCE = "greader-unofficial";
 
-		public GoogleReaderTest() {
+		public GoogleReaderTest() throws FileNotFoundException, IOException {
 
-	/*		//getAuth();
-			GoogleReader gr = new GoogleReader(new OAuthCredentials(
-					"matthiaskaeppler.de",					//consumer key
-	                "etpfOSfQ4e9xnfgOJETy4D56",				//consumer secret
-					"1/FDrHHMUxMPLpzbhOIUbFCj_LlITMWKO0Imj-jjjzUU0",	//auth key
-					"Vx10gFW9PC+GqYUGCBBOThFR"							//auth secret
-				)
-			);*/
+			Properties auth = new Properties();
+			auth.load( new FileInputStream("auth.properties"));
 
 			GoogleReader gr = new GoogleReader(new OAuthCredentials(
 					"anonymous",					//consumer key
 	                "anonymous",					//consumer secret
-					"YOUR AUTH KEY",		//auth key
-					"YOUR AUTH SECRET"							//auth secret
+	                auth.getProperty("auth.key"),		//auth key
+	                auth.getProperty("auth.secret")		//auth secret
 				)
 			);
-	/*		try {
-				gr.login();
-			} catch (AuthenticationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}*/
+
 			try {
 				List<Item> myItems = gr.search("Finance", 10);
 				
@@ -50,8 +40,8 @@ public class GoogleReaderTest {
 					System.out.println(item.getNumericId());
 					//try and get the item using the return id
 					
-					//Item item1 = gr.getItem(item.getId());
-					//System.out.println("using id "+item1.getTitle());
+					Item item1 = gr.getItem(item.getId());
+					System.out.println("using id "+item1.getTitle());
 				}
 			} catch (GoogleReaderException e) {
 				System.out.println("there was an error");
@@ -79,8 +69,10 @@ public class GoogleReaderTest {
 		
 		/**
 		 * @param args
+		 * @throws IOException 
+		 * @throws FileNotFoundException 
 		 */
-		public static void main(String[] args) {
+		public static void main(String[] args) throws FileNotFoundException, IOException {
 			// TODO Auto-generated method stub
 
 			GoogleReaderTest grc = new GoogleReaderTest();

@@ -9,16 +9,18 @@ import org.junit.Test;
 
 import be.lechtitseb.google.reader.api.core.GoogleReader;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
+import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 
 public class GoogleReaderTest {
 
 	@Test
-	public void testAuth() throws FileNotFoundException, IOException, AuthenticationException {
+	public void testAuth() throws FileNotFoundException, IOException, AuthenticationException, GoogleReaderException {
 		Properties auth = new Properties();
 		auth.load( new FileInputStream("auth.properties"));
 
-		GoogleReader gr = new GoogleReader(auth.getProperty("auth.key"),auth.getProperty("auth.secret"));
-		gr.login();
+		GoogleReader googleReader = new GoogleReader(auth.getProperty("auth.key"),auth.getProperty("auth.secret"));
+		googleReader.login();
+		googleReader.getUserInformation();
 		
 	}
 }

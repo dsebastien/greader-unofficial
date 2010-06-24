@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.Test;
+
 import be.lechtitseb.google.reader.api.core.GoogleReader;
 import be.lechtitseb.google.reader.api.model.authentication.OAuthCredentials;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
@@ -64,7 +66,10 @@ public class GoogleReaderTest {
 			
 		}
 
-
+		@Test
+		public void test() {
+			System.out.println("TEST");
+		}
 		
 		
 		/**

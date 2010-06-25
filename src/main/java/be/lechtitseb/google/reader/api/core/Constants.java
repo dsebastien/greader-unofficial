@@ -20,8 +20,12 @@ public final class Constants {
 	public static final String VALUE_SEPARATOR = "=";
 	public static final String SID = "SID";
 	public static final String LSID = "LSID";
+	public static final String AUTH = "Auth";
+	public static final String AUTHORIZATION_HTTP_HEADER = "Authorization";
+	public static final String GOOGLE_AUTH_KEY = "GoogleLogin auth=";
 	public static final String SID_TAG = SID + VALUE_SEPARATOR;
 	public static final String LSID_TAG = LSID + VALUE_SEPARATOR;
+	public static final String AUTH_TAG = AUTH + VALUE_SEPARATOR;
 	public static final String PARAMETER_ITEM_ID = "i";
 	public static final String PARAMETER_TOKEN = "T";
 	public static final String PARAMETER_SHUFFLE_TOKEN = "t";

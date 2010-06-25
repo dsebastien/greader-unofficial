@@ -22,6 +22,7 @@ import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
 import be.lechtitseb.google.reader.api.model.feed.ItemDescriptor;
 import be.lechtitseb.google.reader.api.model.feed.Label;
 import be.lechtitseb.google.reader.api.model.item.Item;
+import be.lechtitseb.google.reader.api.model.opml.Outline;
 import be.lechtitseb.google.reader.api.model.preference.UserPreferences;
 import be.lechtitseb.google.reader.api.model.user.UserInformation;
 import be.lechtitseb.google.reader.api.util.xml.XMLReader;
@@ -140,6 +141,57 @@ public final class GoogleReaderUtil {
 			throw new GoogleReaderException(
 					"Problem while parsing the feed descriptors list", e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Outline> parseOPMLSubscriptions(String xmlContent) throws GoogleReaderException{
+		try {
+			List<Outline> result = new ArrayList<Outline>();
+			Document xmlDocument = new XMLReader().read(xmlContent);
+			if ("opml".equals(xmlDocument.getRootElement().getName())) {
+				Element body = xmlDocument.getRootElement().getChild("body");
+				if (body != null) {
+					List<Element> childs = body.getChildren("outline");
+					if (childs != null) {
+						for (Element element : childs) {
+							Outline outline = parseOutline(element);
+							List<Element> childs2 = null;
+							if ( (childs2 = element.getChildren("outline")) != null) {
+								for (Element element2 : childs2) {
+									Outline outline2 = parseOutline(element2);
+									outline.getChilds().add(outline2);
+								}
+							}
+							result.add(outline);
+						}
+					}
+				}
+			}
+			return result;
+		} catch (JDOMException e) {
+			throw new GoogleReaderException(
+					"Problem while parsing the OPML Subscriptions", e);
+		} catch (IOException e) {
+			throw new GoogleReaderException(
+					"Problem while parsing the OPML Subscriptions", e);
+		}
+	}
+
+	private static Outline parseOutline(Element element) {
+		Outline outline = new Outline();
+		if (element.getAttribute("text") != null) {
+			outline.setText(element.getAttribute("text").getValue());
+		}
+		if (element.getAttribute("title") != null) {
+			outline.setTitle(element.getAttribute("title").getValue());
+		}
+		if (element.getAttribute("htmlUrl") != null) {
+			outline.setHtmlUrl(element.getAttribute("htmlUrl").getValue());
+		}
+		if (element.getAttribute("xmlUrl") != null) {
+			outline.setXmlUrl(element.getAttribute("xmlUrl").getValue());
+		}
+		return outline;
 	}
 
 	/**

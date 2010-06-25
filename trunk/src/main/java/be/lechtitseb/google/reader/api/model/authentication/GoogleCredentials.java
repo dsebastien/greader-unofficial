@@ -7,6 +7,7 @@ package be.lechtitseb.google.reader.api.model.authentication;
 public class GoogleCredentials extends BasicCredentials {
 	private String sid = "";
 	private String lSid = ""; // Unused for now it seems
+	private String auth = "";
 
 	public GoogleCredentials(String username, String password) {
 		super(username, password);
@@ -18,6 +19,7 @@ public class GoogleCredentials extends BasicCredentials {
 	public void clearAuthentication() {
 		setSid(null);
 		setLSid(null);
+		setAuth(null);
 	}
 	
 	@Override
@@ -33,11 +35,19 @@ public class GoogleCredentials extends BasicCredentials {
 		return sid;
 	}
 
+	public String getAuth() {
+		return auth;
+	}
+
+	public void setAuth(String auth) {
+		this.auth = auth;
+	}
+
 	/**
 	 * Whether we have SID + LSID or not
 	 */
 	public boolean hasAuthentication() {
-		return (!sid.equals("") && !lSid.equals(""));
+		return (!sid.equals("") && !lSid.equals("") && !auth.equals(""));
 	}
 
 	public void setLSid(String lSid) {

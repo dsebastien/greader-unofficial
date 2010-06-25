@@ -578,15 +578,6 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 
 
-	public boolean isAuthenticated() {
-		if (hasCredentials()) {
-			return credentials.hasAuthentication();
-		}
-		return false;
-	}
-
-	
-
 	public boolean login() throws AuthenticationException {
 		LOG.trace("Trying to login");
 		if (!hasCredentials()) {
@@ -603,6 +594,9 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		parameters.add(new Parameter(Constants.PARAMETER_LOGIN_USERNAME, credentials.getUsername()));
 		parameters.add(new Parameter(Constants.PARAMETER_LOGIN_PASSWORD, credentials.getPassword()));
+		parameters.add(new Parameter("accountType", "HOSTED_OR_GOOGLE"));//TODO move to Constants
+		parameters.add(new Parameter("service", "reader"));
+		parameters.add(new Parameter("source", "greader-unofficial-0.1-SNAPSHOT"));
 		// parameters.add(new Parameter("service","reader")); // NOT mandatory	
 		
 		
@@ -619,16 +613,23 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 					result.substring(result.indexOf(Constants.SID_TAG)
 							+ Constants.SID_TAG.length(), result.indexOf('\n'));
 			// LOG.debug("SID: "+sid);
+			result = result.substring(result.indexOf('\n')+1);
 			String lSid =
 					result.substring(result.indexOf(Constants.LSID_TAG)
-							+ Constants.LSID_TAG.length(), result.length());
+							+ Constants.LSID_TAG.length(), result.indexOf('\n'));
+			result = result.substring(result.indexOf('\n')+1);
+			String auth =
+				result.substring(result.indexOf(Constants.AUTH_TAG)
+						+ Constants.AUTH_TAG.length(), result.indexOf('\n'));
 			// LOG.debug("LSID: "+lSid);
 			httpManager.clearCookies(); // just to be sure...
-			httpManager.addCookie(new Cookie(Constants.COOKIE_DOMAIN, Constants.SID, sid,
+			/*httpManager.addCookie(new Cookie(Constants.COOKIE_DOMAIN, Constants.SID, sid,
 							Constants.COOKIE_PATH, Constants.COOKIE_MAX_AGE,
-							Constants.COOKIE_SECURE));
+							Constants.COOKIE_SECURE));*/
 			credentials.setSid(sid);
 			credentials.setLSid(lSid);
+			credentials.setAuth(auth);
+			httpManager.setAuth(auth);
 			return true;
 		} catch (GoogleReaderException e) {
 			throw new AuthenticationException(
@@ -637,6 +638,13 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 
 	
+
+	public boolean isAuthenticated() {
+		if (hasCredentials()) {
+			return credentials.hasAuthentication();
+		}
+		return false;
+	}
 
 	public void logout() {
 		if(isAuthenticated()) {
@@ -969,6 +977,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		checkIfAuthenticated();
 		
 		List<Parameter> parameters = new ArrayList<Parameter>();
+		parameters.add(new Parameter("Authorization", "GoogleLogin auth="+credentials.getAuth()));
 		//parameters.add(new Parameter(Constants.PARAMETER_OUTPUT_FORMAT,OutputFormat.JSON.getFormat()));
 		return httpManager.get(Constants.URL_USER_INFO, parameters, true);
 	}

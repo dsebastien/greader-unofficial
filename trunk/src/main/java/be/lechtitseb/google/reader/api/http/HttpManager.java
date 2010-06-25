@@ -122,6 +122,12 @@ public interface HttpManager {
 			throws GoogleReaderException;
 
 	void addCookie(Cookie cookie);
+	
+	/**
+	 * Add Auth value for connect to google resource
+	 * @param auth
+	 */
+	void setAuth(String auth);
 
 	void clearCookies();
 }

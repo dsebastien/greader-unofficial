@@ -11,6 +11,12 @@ import be.lechtitseb.google.reader.api.core.GoogleReader;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 
+/**
+ * http://code.google.com/intl/ru-RU/apis/accounts/docs/AuthForInstalledApps.html#AuthProcess
+ * http://code.google.com/intl/ru-RU/apis/accounts/docs/OAuth.html
+ * @author gizatullinm
+ *
+ */
 public class GoogleReaderTest {
 
 	@Test
@@ -22,5 +28,14 @@ public class GoogleReaderTest {
 		googleReader.login();
 		googleReader.getUserInformation();
 		
+	}
+	
+	public static void main(String[] args) {
+		GoogleReaderTest test = new GoogleReaderTest();
+		try {
+			test.testAuth();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

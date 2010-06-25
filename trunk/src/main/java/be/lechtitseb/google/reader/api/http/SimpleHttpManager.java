@@ -38,12 +38,17 @@ public class SimpleHttpManager implements HttpManager {
 	private HttpMethodRetryHandler retryHandler = null;
 	private HttpClient httpClient = null;
 	private HttpConnectionManager manager = null;
+	private String auth = null;
 
 	public SimpleHttpManager() {
 		manager = new MultiThreadedHttpConnectionManager();
 		cookies = new ArrayList<Cookie>();
 		httpClient = getHttpClient();
 		retryHandler = getRetryHandler();
+	}
+	
+	public void setAuth(String auth) {
+		this.auth = auth;
 	}
 
 	public void addCookie(Cookie cookie) {
@@ -113,6 +118,9 @@ public class SimpleHttpManager implements HttpManager {
 		method.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				retryHandler);
+		if (auth != null) {
+			method.addRequestHeader(Constants.AUTHORIZATION_HTTP_HEADER,Constants.GOOGLE_AUTH_KEY+auth);//TODO remove to Constants
+		}
 		if (useCookies) {
 			HttpState initialState = new HttpState();
 			for (Cookie c : cookies) {

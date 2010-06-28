@@ -563,7 +563,13 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 */
 	private String urlEncode(String s) throws GoogleReaderException {
 		try {
-			return URIUtil.encodeQuery(s);
+			s = URIUtil.encodeQuery(s);
+			/**
+			 * Problem with ? in feed url, we should encode it
+			 * @author maratische
+			 */
+			s  = s.replaceAll("\\?", "%3F");
+			return s;
 		} catch (URIException e) {
 			throw new GoogleReaderException(
 					"Problem while encoding the feed id", e);

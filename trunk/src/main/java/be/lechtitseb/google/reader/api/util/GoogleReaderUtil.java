@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
@@ -611,6 +612,17 @@ public final class GoogleReaderUtil {
 					if (entry.getDescription() != null) {
 						item.setDescription(entry.getDescription().getValue());
 						item.setDescriptionType(entry.getDescription().getType());
+					} else if (entry.getContents() != null && entry.getContents().size()>0) {
+						for (Object objectContent : entry.getContents()) {
+							Content content = (Content)objectContent;
+							if (content != null) {
+								if (item.getDescription() == null) {
+									item.setDescription(content.getValue());
+								} else {
+									item.setDescription(item.getDescription()+content.getValue());
+								}
+							}
+						}
 					}
 					items.add(item);
 				}

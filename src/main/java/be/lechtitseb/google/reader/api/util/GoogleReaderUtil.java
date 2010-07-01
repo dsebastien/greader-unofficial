@@ -14,6 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 
@@ -614,7 +616,7 @@ public final class GoogleReaderUtil {
 						item.setDescriptionType(entry.getDescription().getType());
 					} else if (entry.getContents() != null && entry.getContents().size()>0) {
 						for (Object objectContent : entry.getContents()) {
-							Content content = (Content)objectContent;
+							SyndContent content = (SyndContent)objectContent;
 							if (content != null) {
 								if (item.getDescription() == null) {
 									item.setDescription(content.getValue());

@@ -229,6 +229,16 @@ public final class GoogleReader implements
 		api.markItemAsRead(item,feed);
 	}
 	
+	/**
+	 * @author maratische
+	 * Mark the item from a feed as read
+	 * @param feed The feed to mark as read
+	 * @throws GoogleReaderException If the user is not authenticated
+	 */
+	public void markItemAsRead(ItemDescriptor item,String feedId) throws GoogleReaderException{
+		api.markItemAsRead(item.getUri(),feedId);
+	}
+	
         public GoogleReaderDataProvider getApi () {
                 return api;
         }

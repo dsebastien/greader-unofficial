@@ -508,7 +508,14 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 			throws GoogleReaderException {
 		return getUnreadItems(feed, null);
 	}
-
+	public String getUnreadItems(FeedDescriptor feed, Integer numberOfElements)
+	throws GoogleReaderException {
+		if (feed == null) {
+			throw new IllegalArgumentException(
+					"The feed to get unread items from cannot be null!");
+		}
+		return getUnreadItems(feed.getId(), numberOfElements);
+	}
 	/**
 	 * Get unread items from a given feed as XML String representation (Atom)
 	 * 
@@ -520,10 +527,10 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 * @throws GoogleReaderException
 	 *         If the user is not authenticated
 	 */
-	public String getUnreadItems(FeedDescriptor feed, Integer numberOfElements)
+	public String getUnreadItems(String feedId, Integer numberOfElements)
 			throws GoogleReaderException {
 		LOG.trace("Getting unread items from a feed");
-		if (feed == null) {
+		if (feedId == null) {
 			throw new IllegalArgumentException(
 					"The feed to get unread items from cannot be null!");
 		}
@@ -536,7 +543,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		checkIfAuthenticated();
 		
 		// The feed id needs to be encoded
-		String url = Constants.URL_FEED + urlEncode(feed.getId());
+		String url = Constants.URL_FEED + urlEncode(feedId);
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		
 		if (numberOfElements != null) {

@@ -1,5 +1,7 @@
 package be.lechtitseb.google.reader.api.model.feed;
 
+import java.util.Date;
+
 /**
  * Item Description
  * parsed by ROMO
@@ -12,6 +14,7 @@ public class ItemDescriptor {
 	private String link;
 	private String description;
 	private String descriptionType;
+	private Date updatedDate;
 
 	@Override
 	public String toString() {
@@ -53,5 +56,13 @@ public class ItemDescriptor {
 	}
 	public void setDescriptionType(String descriptionType) {
 		this.descriptionType = descriptionType;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 }

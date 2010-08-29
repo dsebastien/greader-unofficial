@@ -626,6 +626,7 @@ public final class GoogleReaderUtil {
 							}
 						}
 					}
+					item.setUpdatedDate(entry.getUpdatedDate());
 					items.add(item);
 				}
 			}

@@ -599,6 +599,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		
 		if(isAuthenticated()) {
 			LOG.trace("Already authenticated");
+			httpManager.setAuth(getCredentials().getAuth());
 			return true;
 		}
 		

@@ -119,7 +119,7 @@ public class SimpleHttpManager implements HttpManager {
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				retryHandler);
 		if (auth != null) {
-			method.addRequestHeader(Constants.AUTHORIZATION_HTTP_HEADER,Constants.GOOGLE_AUTH_KEY+auth);//TODO remove to Constants
+			method.addRequestHeader(Constants.AUTHORIZATION_HTTP_HEADER,Constants.GOOGLE_AUTH_KEY+auth);
 		}
 		if (useCookies) {
 			HttpState initialState = new HttpState();

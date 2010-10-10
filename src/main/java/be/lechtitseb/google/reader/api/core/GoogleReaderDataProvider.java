@@ -1078,8 +1078,45 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
 		parameters.add(new Parameter("async", "true"));
 		parameters.add(new Parameter("pos", "0"));
-//		parameters.add(new Parameter("a", "user/05721618992712852750/state/com.google/read"));
 		parameters.add(new Parameter("a", "user/"+userId+Constants.ITEM_STATE_READ));
+		String result = httpManager.post(Constants.URL_MARK_ITEM_AS_READ, parameters,true);
+		
+		if(!"OK".equals(result)) {
+			throw new GoogleReaderException("The operation failed (no more details, sorry)");
+		}
+	}
+	/**
+	 * Mark the item from a feed as Starred
+	 * this method is dublicaed from markItemAsRead - TODO I should think about it, optimize
+	 * @param itemId The Item to mark as read
+	 * @param feedId The feed 
+	 * @throws GoogleReaderException If the user is not authenticated
+	 */
+	public void markItemAsStarred(String itemId, String feedId) throws GoogleReaderException {
+		LOG.trace("Marking item from a feed as Starred");
+		
+		if(itemId == null) {
+			throw new IllegalArgumentException("The item id cannot be null!");
+		}
+		
+		if(feedId == null) {
+			throw new IllegalArgumentException("The feed id cannot be null!");
+		}
+		
+		checkIfAuthenticated();
+		List<Parameter> parameters = new ArrayList<Parameter>();
+				
+        String userId = getUserId ();
+        if ( userId == null ) {
+                throw new GoogleReaderException ( "Couldn't retrieve User Id " );
+        }
+
+		parameters.add(new Parameter("s", urlEncode(feedId)));
+		parameters.add(new Parameter("i", urlEncode(itemId)));
+		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
+		parameters.add(new Parameter("async", "true"));
+		parameters.add(new Parameter("pos", "0"));
+		parameters.add(new Parameter("a", "user/"+userId+Constants.ITEM_STATE_STARRED));
 		String result = httpManager.post(Constants.URL_MARK_ITEM_AS_READ, parameters,true);
 		
 		if(!"OK".equals(result)) {

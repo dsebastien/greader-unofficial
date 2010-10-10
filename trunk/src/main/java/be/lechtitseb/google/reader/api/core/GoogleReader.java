@@ -249,6 +249,16 @@ public final class GoogleReader implements
 		api.markItemAsStarred(itemUrl,feedId);
 	}
 	
+	/**
+	 * @author maratische
+	 * Mark the item from a feed as Starred
+	 * @param feed The feed to mark as starred
+	 * @throws GoogleReaderException If the user is not authenticated
+	 */
+	public void markItemAsUnStarred(String itemUrl,String feedId) throws GoogleReaderException{
+		api.markItemAsUnStarred(itemUrl,feedId);
+	}
+	
         public GoogleReaderDataProvider getApi () {
                 return api;
         }

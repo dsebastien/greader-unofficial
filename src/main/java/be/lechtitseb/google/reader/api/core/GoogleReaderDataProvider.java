@@ -1056,44 +1056,25 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	 */
 	public void markItemAsRead(String itemId, String feedId) throws GoogleReaderException {
 		LOG.trace("Marking item from a feed as read");
-		
-		if(itemId == null) {
-			throw new IllegalArgumentException("The item id cannot be null!");
-		}
-		
-		if(feedId == null) {
-			throw new IllegalArgumentException("The feed id cannot be null!");
-		}
-		
-		checkIfAuthenticated();
-		List<Parameter> parameters = new ArrayList<Parameter>();
-				
-        String userId = getUserId ();
-        if ( userId == null ) {
-                throw new GoogleReaderException ( "Couldn't retrieve User Id " );
-        }
-
-		parameters.add(new Parameter("s", urlEncode(feedId)));
-		parameters.add(new Parameter("i", urlEncode(itemId)));
-		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
-		parameters.add(new Parameter("async", "true"));
-		parameters.add(new Parameter("pos", "0"));
-		parameters.add(new Parameter("a", "user/"+userId+Constants.ITEM_STATE_READ));
-		String result = httpManager.post(Constants.URL_MARK_ITEM_AS_READ, parameters,true);
-		
-		if(!"OK".equals(result)) {
-			throw new GoogleReaderException("The operation failed (no more details, sorry)");
-		}
+		markItemAs(itemId, feedId, "a", Constants.ITEM_STATE_READ);
+	}
+	public void markItemAsStarred(String itemId, String feedId) throws GoogleReaderException {
+		LOG.trace("Marking item from a feed as Starred");
+		markItemAs(itemId, feedId, "a", Constants.ITEM_STATE_STARRED);
+	}
+	public void markItemAsUnStarred(String itemId, String feedId) throws GoogleReaderException {
+		LOG.trace("Marking item from a feed as Starred");
+		markItemAs(itemId, feedId, "r", Constants.ITEM_STATE_STARRED);
 	}
 	/**
 	 * Mark the item from a feed as Starred
 	 * this method is dublicaed from markItemAsRead - TODO I should think about it, optimize
 	 * @param itemId The Item to mark as read
 	 * @param feedId The feed 
+	 * @param markValue - type of mark
 	 * @throws GoogleReaderException If the user is not authenticated
 	 */
-	public void markItemAsStarred(String itemId, String feedId) throws GoogleReaderException {
-		LOG.trace("Marking item from a feed as Starred");
+	private void markItemAs(String itemId, String feedId, String markParameter, String markValue) throws GoogleReaderException {
 		
 		if(itemId == null) {
 			throw new IllegalArgumentException("The item id cannot be null!");
@@ -1116,7 +1097,7 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 		parameters.add(new Parameter(Constants.PARAMETER_TOKEN, getToken()));
 		parameters.add(new Parameter("async", "true"));
 		parameters.add(new Parameter("pos", "0"));
-		parameters.add(new Parameter("a", "user/"+userId+Constants.ITEM_STATE_STARRED));
+		parameters.add(new Parameter(markParameter, "user/"+userId+markValue));
 		String result = httpManager.post(Constants.URL_MARK_ITEM_AS_READ, parameters,true);
 		
 		if(!"OK".equals(result)) {

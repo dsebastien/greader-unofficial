@@ -627,6 +627,10 @@ public final class GoogleReaderUtil {
 						}
 					}
 					item.setUpdatedDate(entry.getUpdatedDate());
+					//this field contents link to feed
+					if (entry.getSource() != null) {
+						item.setSourceUri(entry.getSource().getUri());
+					}
 					items.add(item);
 				}
 			}

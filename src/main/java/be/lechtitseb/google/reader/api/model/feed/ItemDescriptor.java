@@ -15,6 +15,7 @@ public class ItemDescriptor {
 	private String description;
 	private String descriptionType;
 	private Date updatedDate;
+	private String sourceUri;
 
 	@Override
 	public String toString() {
@@ -64,5 +65,13 @@ public class ItemDescriptor {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public void setSourceUri(String sourceUri) {
+		this.sourceUri = sourceUri;
+	}
+
+	public String getSourceUri() {
+		return sourceUri;
 	}
 }

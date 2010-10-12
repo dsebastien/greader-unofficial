@@ -220,6 +220,10 @@ public final class GoogleReader implements
 		api.markFeedAsRead(feed);
 	}
 	
+	public String getStarredItems(Integer numberOfElements) throws GoogleReaderException {
+		return api.getStarredItems(numberOfElements);
+	}
+	
 	/**
 	 * Mark the item from a feed as read
 	 * @param feed The feed to mark as read

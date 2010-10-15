@@ -15,6 +15,7 @@ import be.lechtitseb.google.reader.api.http.Parameter;
 import be.lechtitseb.google.reader.api.http.SimpleHttpManager;
 import be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager;
 import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
+import be.lechtitseb.google.reader.api.model.authentication.ProxyCredentials;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
@@ -35,19 +36,32 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	private GoogleCredentials credentials = null;
 	
 
-	protected GoogleReaderDataProvider() {
+	protected GoogleReaderDataProvider(ProxyCredentials proxyCredentials) {
 		LOG.trace("Initializing Google Reader API");
-		httpManager = new SimpleHttpManager();
+		httpManager = new SimpleHttpManager(proxyCredentials);
+/*		if (proxyCredentials == null) {
+		} else {
+			httpManager = new ProxyHttpManager(proxyCredentials);
+		}*/
 	}
 
-	protected GoogleReaderDataProvider(GoogleCredentials credentials) {
-		this();
+//	protected GoogleReaderDataProvider(GoogleCredentials credentials) {
+//		this(credentials, null);
+//	}
+	
+	protected GoogleReaderDataProvider(GoogleCredentials credentials, ProxyCredentials proxyCredentials) {
+		this(proxyCredentials);
 		setCredentials(credentials);
 	}
 	
 	protected GoogleReaderDataProvider(String username, String password) {
-		this();
+		this(username, password, null);
+	}
+	
+	protected GoogleReaderDataProvider(String username, String password, ProxyCredentials proxyCredentials) {
+		this(proxyCredentials);
 		setCredentials(username, password);
+		
 	}
 
 	/**

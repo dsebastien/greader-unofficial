@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import be.lechtitseb.google.reader.api.model.authentication.AuthenticationManager;
 import be.lechtitseb.google.reader.api.model.authentication.GoogleCredentials;
+import be.lechtitseb.google.reader.api.model.authentication.ProxyCredentials;
 import be.lechtitseb.google.reader.api.model.exception.AuthenticationException;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 import be.lechtitseb.google.reader.api.model.feed.FeedDescriptor;
@@ -34,15 +35,23 @@ public final class GoogleReader implements
 	private GoogleReaderDataProvider api;
 
 	public GoogleReader() {
-		api = new GoogleReaderDataProvider();
+		api = new GoogleReaderDataProvider(null);
 	}
 
 	public GoogleReader(String username, String password) {
-		api = new GoogleReaderDataProvider(username, password);
+		this(username, password, null);
+	}
+
+	public GoogleReader(String username, String password, ProxyCredentials proxyCredentials) {
+		api = new GoogleReaderDataProvider(username, password, proxyCredentials);
 	}
 
 	public GoogleReader(GoogleCredentials credentials) {
-		api = new GoogleReaderDataProvider(credentials);
+		this(credentials, null);
+	}
+
+	public GoogleReader(GoogleCredentials credentials, ProxyCredentials proxyCredentials) {
+		api = new GoogleReaderDataProvider(credentials, proxyCredentials);
 	}
 
 	public void clearCredentials() {

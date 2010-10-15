@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.httpclient.Cookie;
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
@@ -18,6 +20,8 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.NoHttpResponseException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -25,6 +29,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 import be.lechtitseb.google.reader.api.core.Constants;
+import be.lechtitseb.google.reader.api.model.authentication.ProxyCredentials;
 import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 
 /**
@@ -34,16 +39,16 @@ import be.lechtitseb.google.reader.api.model.exception.GoogleReaderException;
 public class SimpleHttpManager implements HttpManager {
 	private static final Logger LOG =
 			Logger.getLogger(SimpleHttpManager.class.getName());
-	private List<Cookie> cookies = null;
-	private HttpMethodRetryHandler retryHandler = null;
-	private HttpClient httpClient = null;
-	private HttpConnectionManager manager = null;
+	protected List<Cookie> cookies = null;
+	protected HttpMethodRetryHandler retryHandler = null;
+	protected HttpClient httpClient = null;
+	protected HttpConnectionManager manager = null;
 	private String auth = null;
 
-	public SimpleHttpManager() {
+	public SimpleHttpManager(ProxyCredentials proxyCredentials) {
 		manager = new MultiThreadedHttpConnectionManager();
 		cookies = new ArrayList<Cookie>();
-		httpClient = getHttpClient();
+		httpClient = getHttpClient(proxyCredentials);
 		retryHandler = getRetryHandler();
 	}
 	
@@ -187,7 +192,7 @@ public class SimpleHttpManager implements HttpManager {
 		return sb.toString();
 	}
 
-	private HttpClient getHttpClient() {
+	protected HttpClient getHttpClient(ProxyCredentials proxyCredentials) {
 		HttpClient client = new HttpClient(manager);
 		client.getParams().setParameter(Constants.HTTP_CHARSET_PARAMETER,
 				Constants.HTTP_CHARSET_VALUE);
@@ -198,10 +203,18 @@ public class SimpleHttpManager implements HttpManager {
 			initialState.addCookie(c);
 		}
 		client.setState(initialState);
+		
+		if (proxyCredentials != null) {
+			HostConfiguration config = client.getHostConfiguration();
+			config.setProxy(proxyCredentials.getHost(), proxyCredentials.getPort());
+			Credentials credentials = new UsernamePasswordCredentials(proxyCredentials.getLogin(), proxyCredentials.getPassword());
+			AuthScope authScope = new AuthScope(proxyCredentials.getHost(), proxyCredentials.getPort());
+			client.getState().setProxyCredentials(authScope, credentials);
+		}
 		return client;
 	}
 
-	private HttpMethodRetryHandler getRetryHandler() {
+	protected HttpMethodRetryHandler getRetryHandler() {
 		return new HttpMethodRetryHandler() {
 			public boolean retryMethod(final HttpMethod method,
 					final IOException exception, int executionCount) {

@@ -1296,14 +1296,16 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
         /**
          * Gets User Id From Google Reader
          * @return String The Google user ID
+         * @throws GoogleReaderException 
          */
-        public String getUserId () {
+        public String getUserId () throws GoogleReaderException {
                 try {
                         JSONObject jSONObject = new JSONObject ( getUserInformation () );
                         String userId = jSONObject.getString ( "userId" );
                         return userId;
                 } catch ( GoogleReaderException ex ) {
                         LOG.error ( "Google Reader Exception  while Getting User ID :  "+ex );
+                        throw ex;
                 } catch ( JSONException ex ) {
                         LOG.error ( "JSON Exception while Getting User ID : "+ex );
                 }

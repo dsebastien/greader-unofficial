@@ -59,6 +59,7 @@ public final class Constants {
 	public static final String ITEM_STATE_READ = ITEM_STATE + "/read";
 	public static final String ITEM_STATE_STARRED = ITEM_STATE + "/starred";
 	public static final String ITEM_STATE_SHARED = ITEM_STATE + "/broadcast";
+	public static final String ITEM_STATE_SHARED_FRIENDS = ITEM_STATE + "/broadcast-friends";
 	public static final String ITEM_STATE_READING_LIST =
 			ITEM_STATE + "/reading-list";
 	public static final String ITEM_STATE_FRESH = ITEM_STATE + "/fresh";
@@ -75,6 +76,8 @@ public final class Constants {
 			URL_READER + "/atom/user/-" + ITEM_STATE_STARRED;
 	public static final String URL_ITEMS_SHARED =
 			URL_READER + "/atom/user/-" + ITEM_STATE_SHARED;
+	public static final String URL_ITEMS_SHARED_FRIENDS =
+		URL_READER + "/atom/user/-" + ITEM_STATE_SHARED_FRIENDS;
 	public static final String URL_USER_TOKEN = "%%%USER_ID%%%";
 	public static final String URL_ITEMS_SHARED_BY_SOMEONE_ELSE =
 			URL_READER + "/public/atom/user/" + URL_USER_TOKEN

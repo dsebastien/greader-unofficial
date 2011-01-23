@@ -370,6 +370,38 @@ public final class GoogleReaderDataProvider implements AuthenticationManager<Goo
 	}
 
 	/**
+	 * Get your shared items as an XML String (Atom)
+	 * 
+	 * @param numberOfElements
+	 *        How many items should be retrieved (default if null: 20)
+	 * @return your shared items
+	 * @throws GoogleReaderException
+	 *         If the user is not authenticated
+	 */
+	public String getSharedFriendsItems(Integer numberOfElements)
+			throws GoogleReaderException {
+		LOG.trace("Getting authenticated user shared items");
+		if (numberOfElements != null) {
+			if (numberOfElements <= 0) {
+				throw new IllegalArgumentException(
+						"The number of elements must be > 0");
+			}
+		}
+		checkIfAuthenticated();
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		if (numberOfElements != null) {
+			parameters.add(new Parameter(Constants.PARAMETER_NUMBER_OF_RESULTS,
+					numberOfElements));
+		}
+		parameters.add(new Parameter(Constants.PARAMETER_STATE_FILTER, "user/"+getUserId()+Constants.ITEM_STATE_READ));
+		parameters.add(new Parameter("ck", ""+new Date().getTime()));
+		parameters.add(new Parameter("client", "greader-unofficial"));
+
+		return httpManager.get(Constants.URL_ITEMS_SHARED_FRIENDS, parameters,
+				true);
+	}
+
+	/**
 	 * Get items shared by another user (Atom). You need the user's Id number to
 	 * use this, which is pretty easy to get through your shared items page
 	 * 

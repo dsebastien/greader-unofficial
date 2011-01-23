@@ -233,6 +233,18 @@ public final class GoogleReader implements
 		return api.getStarredItems(numberOfElements);
 	}
 	
+	public String getSharedItems(Integer numberOfElements) throws GoogleReaderException {
+		return api.getSharedItems(numberOfElements);
+	}
+	
+	public String getSharedItems() throws GoogleReaderException {
+		return api.getSharedItems();
+	}
+	
+	public String getSharedFriendsItems(Integer numberOfElements) throws GoogleReaderException {
+		return api.getSharedFriendsItems(numberOfElements);
+	}
+	
 	/**
 	 * Mark the item from a feed as read
 	 * @param feed The feed to mark as read

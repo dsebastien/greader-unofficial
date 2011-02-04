@@ -631,6 +631,7 @@ public final class GoogleReaderUtil {
 					if (entry.getSource() != null) {
 						item.setSourceUri(entry.getSource().getUri());
 					}
+					item.setAuthor(entry.getAuthor());
 					items.add(item);
 				}
 			}

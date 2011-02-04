@@ -16,6 +16,7 @@ public class ItemDescriptor {
 	private String descriptionType;
 	private Date updatedDate;
 	private String sourceUri;
+	private String author;
 
 	@Override
 	public String toString() {
@@ -73,5 +74,13 @@ public class ItemDescriptor {
 
 	public String getSourceUri() {
 		return sourceUri;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }

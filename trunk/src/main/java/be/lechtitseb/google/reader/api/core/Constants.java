@@ -104,7 +104,7 @@ public final class Constants {
 	public static final String URL_MARK_ALL_AS_READ = URL_API + "/mark-all-as-read";
 	public static final String URL_MARK_ITEM_AS_READ = URL_API + "/edit-tag";
 	
-	public static final String URL_USER_INFO = URL_READER + "/user-info";
+	public static final String URL_USER_INFO = URL_API + "/user-info";
 
 	// PREFERENCE_STREAM_URL = READER_URL +
 	// '/api/0/preference/stream/list?output=json'
